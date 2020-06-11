@@ -1,20 +1,16 @@
 import express, { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 
-import signInValidator from '../validators/signInValidator';
+import signInValidator from '../validators/signUpValidator';
 
 const router = express.Router();
 
-interface SignInBodyRequest extends Request {
-  body: {
-    email: string;
-    password: string;
-  };
-}
-
-router.post('/', signInValidator, (req: SignInBodyRequest, res: Response) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
+router.post('/', signInValidator, (req: Request, res: Response) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.status(400).send(error.array());
   }
+  const { email, password } = req.body;
 });
 
 export { router as signInRoute };

@@ -1,14 +1,8 @@
 import { body } from 'express-validator';
 
 export default [
-  body('email')
-    .notEmpty()
-    .withMessage('Email cannot be empty')
-    .isEmail()
-    .withMessage('Email must be valid'),
+  body('email').isEmail().withMessage('Email must be valid'),
   body('password')
-    .notEmpty()
-    .withMessage('Password cannot be empty')
     .trim()
     .isLength({ min: 6 })
     .withMessage('Password must be between 4 and 20 characters')
