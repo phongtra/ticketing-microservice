@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/', signUpValidator, (req: Request, res: Response) => {
   const error = validationResult(req);
   if (!error.isEmpty()) {
-    return res.status(400).send(error.array());
+    throw new Error('Invalid email or password');
   }
   const { email, password } = req.body;
   console.log('Creating User');
