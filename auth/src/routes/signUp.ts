@@ -19,7 +19,7 @@ router.post('/', signUpValidator, async (req: Request, res: Response) => {
   }
   const user = User.build({ email, password });
   await user.save();
-  res.status(201).send(user);
+  res.status(201).send(user.toJSON());
 });
 
 export { router as signUpRoute };

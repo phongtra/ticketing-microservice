@@ -1,4 +1,5 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
+import { Password } from '../services/passwordHashingService';
 
 //interface that describe the properties that are required to create
 //a new user
@@ -26,6 +27,22 @@ const userSchema = new Schema({
   password: { type: String, required: true }
 });
 
+userSchema.pre('save', async function (done) {
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
+  }
+  done();
+});
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+    // the passwordHash should not be revealed
+    delete returnedObject.password;
+  }
+});
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
 };
