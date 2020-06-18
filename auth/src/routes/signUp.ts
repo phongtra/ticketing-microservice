@@ -23,8 +23,9 @@ router.post('/', signUpValidator, async (req: Request, res: Response) => {
   console.log('Proceed to sending jwt');
   const userJWT = jwt.sign(
     { userId: user.id, userEmail: user.email },
-    'kdssdfdsklfdsf'
+    process.env.JWT_KEY!
   );
+
   console.log(userJWT);
   req.session = { jwt: userJWT };
   res.status(201).send(user.toJSON());
