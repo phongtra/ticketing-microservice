@@ -31,16 +31,20 @@ app.all('*', async (req, res) => {
 app.use(errorHandler);
 
 const start = async () => {
-  try {
-    await mongoose.connect('mongodb://auth-mongo-srv-cluster:27017/auth', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true
-    });
-    console.log('Connecting to mongodb');
-  } catch (e) {
-    console.error(e);
-  }
+  let retries = 5;
+  while (retries > 0)
+    try {
+      await mongoose.connect('mongodb://auth-mongo-srv-cluster:27017/auth', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+      });
+      console.log('Connecting to mongodb');
+      break;
+    } catch (e) {
+      retries--;
+      console.error('Failed to connect, retries time is: ', retries);
+    }
 };
 
 app.listen(3000, () => {
