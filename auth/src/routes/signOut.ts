@@ -2,8 +2,9 @@ import express, { Request, Response } from 'express';
 
 const router = express.Router();
 
-router.get('/', (_req: Request, res: Response) => {
-  res.send('Hi There');
+router.get('/', (req: Request, res: Response) => {
+  req.session = null;
+  res.end();
 });
 
 export { router as signOutRoute };
