@@ -14,9 +14,8 @@ router.post(
   async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      throw new BadRequestError('Email is already in used');
-    }
+    if (existingUser) throw new BadRequestError('Email is already in used');
+
     const user = User.build({ email, password });
     await user.save();
     const userJWT = jwt.sign(
