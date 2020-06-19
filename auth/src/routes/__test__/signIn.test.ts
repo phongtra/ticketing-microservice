@@ -30,7 +30,7 @@ it('fails when incorrect password is provide', async () => {
       password: 'Godlike123!'
     })
     .expect(201);
-  await request(app)
+  return request(app)
     .post('/api/users/signin')
     .send({ email: 'test@test.com', password: 'skadhsakdhak' })
     .expect(400);
