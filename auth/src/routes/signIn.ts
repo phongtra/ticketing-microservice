@@ -21,7 +21,6 @@ router.post(
       password
     );
     if (!passwordMatch) throw new BadRequestError('Invalid credential');
-    console.log('Logging in');
     const userJWT = jwt.sign(
       { userId: existingUser.id, userEmail: existingUser.email },
       process.env.JWT_KEY!
