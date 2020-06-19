@@ -1,15 +1,24 @@
 import request from 'supertest';
 import { app } from '../../App';
 
-it('responses with detail about the current user', async () => {
-  const cookie = await global.signin();
+it('session management should work across requests', async () => {
+  const agent = request.agent(app);
 
-  const res = await request(app)
-    .get('/api/users/currentuser')
-    .set('Cookie', cookie)
-    .send()
-    .expect(200);
-  expect(res.body.currentUser.userEmail).toEqual('test@test.com');
+  await agent
+    .post('/api/users/signup')
+    .send({
+      email: 'test@test.com',
+      password: 'Godlike123!'
+    })
+    .expect(201);
+
+  let response = await agent.get('/api/users/currentuser').send().expect(200);
+  expect(response.body.currentUser?.userEmail).toEqual('test@test.com');
+
+  await agent.get('/api/users/signout').send({}).expect(200);
+
+  response = await agent.get('/api/users/currentuser').send().expect(200);
+  expect(response.body.currentUser).toBeNull();
 });
 
 it('responds with null if not authenticated', async () => {
