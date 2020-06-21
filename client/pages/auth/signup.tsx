@@ -1,5 +1,6 @@
 import { useState, SyntheticEvent } from 'react';
 import useRequest from '../../hooks/useRequest';
+import Router from 'next/router';
 
 export default () => {
   const [email, setEmail] = useState('');
@@ -7,7 +8,8 @@ export default () => {
   const { doRequest, errors } = useRequest({
     url: '/api/users/signup',
     method: 'post',
-    body: { email, password }
+    body: { email, password },
+    onSuccess: () => Router.push('/')
   });
   const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
