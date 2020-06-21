@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, SyntheticEvent } from 'react';
+import useRequest from '../../hooks/useRequest';
 
 export default () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const onSubmit = (e) => {
+  const { doRequest, errors } = useRequest({
+    url: '/api/users/signup',
+    method: 'post',
+    body: { email, password }
+  });
+  const onSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    console.log({ email, password });
+    await doRequest();
   };
 
   return (
@@ -27,6 +33,7 @@ export default () => {
           className='form-control'
         />
       </div>
+      {errors}
       <button className='btn btn-primary'>Sign Up</button>
     </form>
   );
