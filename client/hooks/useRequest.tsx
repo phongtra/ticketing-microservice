@@ -1,12 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { useState } from 'react';
-
-type Request = {
-  url: string;
-  method: string;
-  body: { [key: string]: any };
-  onSuccess?: (data: AxiosResponse) => void;
-};
+import { Request } from '../types';
 
 export default ({ url, method, body, onSuccess }: Request) => {
   const [errors, setErrors] = useState<JSX.Element | null>(null);
