@@ -11,6 +11,6 @@ export interface CurrentUser {
 export interface Request {
   url: string;
   method: string;
-  body: { [key: string]: any };
+  body?: { [key: string]: any };
   onSuccess?: (data: AxiosResponse) => void;
 }

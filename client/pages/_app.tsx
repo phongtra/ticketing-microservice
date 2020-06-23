@@ -4,6 +4,7 @@ import buildClient from '../api/buildClient';
 import { AxiosResponse } from 'axios';
 import { CurrentUser } from '../types';
 import { AppContextType } from 'next/dist/next-server/lib/utils';
+import Header from '../components/Header';
 
 const AppComponent = ({
   Component,
@@ -12,7 +13,7 @@ const AppComponent = ({
 }: AppProps & CurrentUser) => {
   return (
     <div>
-      <h1>Hello, {currentUser.email}</h1>
+      <Header currentUser={currentUser} />
       <Component {...pageProps} />;
     </div>
   );
@@ -27,8 +28,8 @@ AppComponent.getInitialProps = async ({ ctx, Component }: AppContextType) => {
   const { data }: AxiosResponse<CurrentUser> = await client.get(
     '/api/users/currentuser'
   );
-
-  return { pageProps, data };
+  console.log(data);
+  return { pageProps, ...data };
 };
 
 export default AppComponent;
