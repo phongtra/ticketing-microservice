@@ -16,3 +16,15 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: phongtran2606/client-service
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.tsx'
+            dest: .
+          - src: '**/*.ts'
+            dest: .
+          - src: '**/*.js'
+            dest: .
