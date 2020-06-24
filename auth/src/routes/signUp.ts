@@ -2,8 +2,7 @@ import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import signUpValidator from '../validators/signUpValidator';
-import { BadRequestError } from '../errors/BadRequestError';
-import { requestValidation } from '../middlewares/requestValidation';
+import { BadRequestError, requestValidation } from '@pt-ticket/common';
 
 const router = express.Router();
 

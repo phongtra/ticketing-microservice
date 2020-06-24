@@ -6,8 +6,8 @@ import { currentUserRouter } from './routes/currentUser';
 import { signInRoute } from './routes/signIn';
 import { signOutRoute } from './routes/signOut';
 import { signUpRoute } from './routes/signUp';
-import { errorHandler } from './middlewares/errorHandler';
-import { NotFoundError } from './errors/NotFoundError';
+import { errorHandler, NotFoundError } from '@pt-ticket/common';
+
 const app = express();
 app.set('trust proxy', true);
 app.use(json());

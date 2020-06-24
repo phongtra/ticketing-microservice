@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import signInValidator from '../validators/signInValidator';
-import { requestValidation } from '../middlewares/requestValidation';
+import { requestValidation, BadRequestError } from '@pt-ticket/common';
 import { User } from '../models/User';
-import { BadRequestError } from '../errors/BadRequestError';
 import { Password } from '../services/passwordHashingService';
 
 const router = express.Router();
