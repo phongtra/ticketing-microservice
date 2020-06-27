@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
 
 export const DbConnect = async () => {
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI must be defined');
+  }
   let retries = 5;
   while (retries > 0)
     try {
-      await mongoose.connect('mongodb://auth-mongo-srv-cluster:27017/auth', {
+      await mongoose.connect(process.env.MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true
