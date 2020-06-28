@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { DatabaseConnectionError } from '@pt-ticket/common';
 
 export const DbConnect = async () => {
   if (!process.env.MONGO_URI) {
@@ -17,5 +18,8 @@ export const DbConnect = async () => {
     } catch (e) {
       retries--;
       console.error('Failed to connect, retries time is: ', retries);
+      if (retries == 0) {
+        throw new DatabaseConnectionError();
+      }
     }
 };
