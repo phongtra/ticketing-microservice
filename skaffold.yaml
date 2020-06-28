@@ -28,3 +28,11 @@ build:
             dest: .
           - src: '**/*.js'
             dest: .
+    - image: phongtran2606/ticket-service
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.ts'
+            dest: .
