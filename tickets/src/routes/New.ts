@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { requireAuth, requestValidation } from '@pt-ticket/common';
 import createTicketValidator from '../../validators/createTicketValidator';
+import { Ticket } from '../models/Ticket';
 
 const router = express.Router();
 
@@ -9,8 +10,16 @@ router.post(
   requireAuth,
   createTicketValidator,
   requestValidation,
-  (req: Request, res: Response) => {
-    res.sendStatus(201);
+  async (req: Request, res: Response) => {
+    const { title, price } = req.body;
+
+    const ticket = Ticket.build({
+      title,
+      price,
+      userId: req.currentUser!.id
+    });
+    await ticket.save();
+    res.status(201).send(ticket);
   }
 );
 
