@@ -3,7 +3,7 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { errorHandler, NotFoundError, currentUser } from '@pt-ticket/common';
-import { createTicketRouter } from './routes/New';
+import { createTicketRouter } from './routes/ticket';
 
 const app = express();
 app.set('trust proxy', true);

@@ -1,5 +1,9 @@
 import express, { Request, Response } from 'express';
-import { requireAuth, requestValidation } from '@pt-ticket/common';
+import {
+  requireAuth,
+  requestValidation,
+  NotFoundError
+} from '@pt-ticket/common';
 import createTicketValidator from '../../validators/createTicketValidator';
 import { Ticket } from '../models/Ticket';
 
@@ -22,5 +26,19 @@ router.post(
     res.status(201).send(ticket);
   }
 );
+
+router.get('/', async (req: Request, res: Response) => {
+  const tickets = await Ticket.find({});
+  return res.send(tickets);
+});
+
+router.get('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const ticket = await Ticket.findById(id);
+  if (!ticket) {
+    throw new NotFoundError();
+  }
+  res.send(ticket);
+});
 
 export { router as createTicketRouter };
