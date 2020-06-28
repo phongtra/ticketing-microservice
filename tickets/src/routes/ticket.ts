@@ -2,9 +2,10 @@ import express, { Request, Response } from 'express';
 import {
   requireAuth,
   requestValidation,
-  NotFoundError
+  NotFoundError,
+  NotAuthorizedError
 } from '@pt-ticket/common';
-import createTicketValidator from '../../validators/createTicketValidator';
+import ticketValidator from '../../validators/ticketValidator';
 import { Ticket } from '../models/Ticket';
 
 const router = express.Router();
@@ -12,7 +13,7 @@ const router = express.Router();
 router.post(
   '/',
   requireAuth,
-  createTicketValidator,
+  ticketValidator,
   requestValidation,
   async (req: Request, res: Response) => {
     const { title, price } = req.body;
@@ -40,5 +41,29 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
   res.send(ticket);
 });
+
+router.put(
+  '/:id',
+  requireAuth,
+  ticketValidator,
+  requestValidation,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const ticket = await Ticket.findById(id);
+    if (!ticket) {
+      throw new NotFoundError();
+    }
+    if (ticket.userId !== req.currentUser!.id) {
+      throw new NotAuthorizedError();
+    }
+    const { title, price } = req.body;
+    ticket.set({
+      title,
+      price
+    });
+    await ticket.save();
+    res.send(ticket);
+  }
+);
 
 export { router as createTicketRouter };

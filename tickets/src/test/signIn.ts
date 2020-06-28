@@ -2,11 +2,13 @@
 //DO NOT USE ANYWHERE ELSE IN THE PROJECT
 
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 export const signIn = () => {
+  const id = mongoose.Types.ObjectId().toHexString();
   //Build a JWT payload
   const payload = {
-    id: 'ajdkhsakjdha',
+    id,
     email: 'test@test.com'
   };
   //Create the JWT
