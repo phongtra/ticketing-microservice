@@ -7,7 +7,7 @@ const stan = nats.connect('ticketing', 'abc', {
   url: 'http://localhost:4222'
 });
 
-stan.on('connect', () => {
+stan.on('connect', async () => {
   console.log('Publisher connected to nats');
 
   const data = {
@@ -15,5 +15,9 @@ stan.on('connect', () => {
     title: 'connect',
     price: 20
   };
-  new TicketCreatedPublisher(stan).publish(data);
+  try {
+    await new TicketCreatedPublisher(stan).publish(data);
+  } catch (e) {
+    console.log(e);
+  }
 });
