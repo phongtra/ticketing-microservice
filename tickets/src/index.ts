@@ -11,6 +11,12 @@ const start = async () => {
     throw new Error('JWT_KEY must be defined');
   }
   await NatsConnect();
+  natsWrapper.stan.on('close', () => {
+    console.log('NATS connection close on ticketing');
+    process.exit();
+  });
+  process.on('SIGINT', () => natsWrapper.stan.close());
+  process.on('SIGTERM', () => natsWrapper.stan.close());
   await DbConnect();
 
   server.listen(3000, () => {
