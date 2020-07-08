@@ -1,19 +1,25 @@
 import nats, { Stan } from 'node-nats-streaming';
 
 class NatsWrapper {
-  private _client?: Stan;
+  private _stan?: Stan;
 
   connect(clusterId: string, clientId: string, url: string) {
-    this._client = nats.connect(clusterId, clientId, { url });
+    this._stan = nats.connect(clusterId, clientId, { url });
     return new Promise((resolve, reject) => {
-      this._client!.on('connect', () => {
+      this.stan.on('connect', () => {
         console.log('Connected to NATS');
         resolve();
       });
-      this._client!.on('error', (err) => {
+      this.stan.on('error', (err) => {
         reject(err);
       });
     });
+  }
+  get stan() {
+    if (!this._stan) {
+      throw new Error('Cannot access nats client before connecting');
+    }
+    return this._stan;
   }
 }
 

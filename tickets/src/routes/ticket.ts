@@ -8,6 +8,7 @@ import {
 import ticketValidator from '../../validators/ticketValidator';
 import { Ticket } from '../models/Ticket';
 import { TicketCreatedPublisher } from '../events/publisher/TicketCreatedPublisher';
+import { natsWrapper } from '../NatsConnect';
 
 const router = express.Router();
 
@@ -25,7 +26,10 @@ router.post(
       userId: req.currentUser!.id
     });
     await ticket.save();
-    // new TicketCreatedPublisher(stan).publish({ id: ticket.id, ...ticket });
+    new TicketCreatedPublisher(natsWrapper.stan).publish({
+      id: ticket.id,
+      ...ticket
+    });
     res.status(201).send(ticket);
   }
 );
