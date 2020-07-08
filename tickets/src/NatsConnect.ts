@@ -1,26 +1,22 @@
-import nats, { Stan } from 'node-nats-streaming';
+import { natsWrapper } from './NatsWrapper';
 
-class NatsWrapper {
-  private _stan?: Stan;
+import { randomBytes } from 'crypto';
+export const NatsConnect = async () => {
+  let retries = 5;
+  while (retries > 0)
+    try {
+      await natsWrapper.connect(
+        'ticketing',
+        randomBytes(4).toString('hex'),
+        'http://nats-srv-cluster:4222'
+      );
 
-  connect(clusterId: string, clientId: string, url: string) {
-    this._stan = nats.connect(clusterId, clientId, { url });
-    return new Promise((resolve, reject) => {
-      this.stan.on('connect', () => {
-        console.log('Connected to NATS');
-        resolve();
-      });
-      this.stan.on('error', (err) => {
-        reject(err);
-      });
-    });
-  }
-  get stan() {
-    if (!this._stan) {
-      throw new Error('Cannot access nats client before connecting');
+      break;
+    } catch (e) {
+      retries--;
+      console.error('Failed to connect, retries time is: ', retries);
+      if (retries == 0) {
+        throw new Error('Failed to connect to NATS');
+      }
     }
-    return this._stan;
-  }
-}
-
-export const natsWrapper = new NatsWrapper();
+};

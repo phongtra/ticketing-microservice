@@ -8,7 +8,7 @@ import {
 import ticketValidator from '../../validators/ticketValidator';
 import { Ticket } from '../models/Ticket';
 import { TicketCreatedPublisher } from '../events/publisher/TicketCreatedPublisher';
-import { natsWrapper } from '../NatsConnect';
+import { natsWrapper } from '../NatsWrapper';
 
 const router = express.Router();
 

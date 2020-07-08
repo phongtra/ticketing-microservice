@@ -1,8 +1,8 @@
 import http from 'http';
 import { app } from './App';
 import { DbConnect } from './DbConnect';
-import { natsWrapper } from './NatsConnect';
-import { randomBytes } from 'crypto';
+import { natsWrapper } from './NatsWrapper';
+import { NatsConnect } from './NatsConnect';
 
 const server = http.createServer(app);
 
@@ -10,11 +10,7 @@ const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
   }
-  await natsWrapper.connect(
-    'ticketing',
-    randomBytes(4).toString('hex'),
-    'http://nats-srv-cluster:4222'
-  );
+  await NatsConnect();
   await DbConnect();
 
   server.listen(3000, () => {
