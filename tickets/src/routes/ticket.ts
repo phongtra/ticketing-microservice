@@ -9,6 +9,7 @@ import ticketValidator from '../../validators/ticketValidator';
 import { Ticket } from '../models/Ticket';
 import { TicketCreatedPublisher } from '../events/publisher/TicketCreatedPublisher';
 import { natsWrapper } from '../NatsWrapper';
+import { TicketUpdatedPublisher } from '../events/publisher/TicketUpdatedPublisher';
 
 const router = express.Router();
 
@@ -70,6 +71,12 @@ router.put(
       price
     });
     await ticket.save();
+    new TicketUpdatedPublisher(natsWrapper.stan).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId
+    });
     res.send(ticket);
   }
 );
