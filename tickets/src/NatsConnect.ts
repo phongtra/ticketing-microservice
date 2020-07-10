@@ -2,13 +2,22 @@ import { natsWrapper } from './NatsWrapper';
 
 import { randomBytes } from 'crypto';
 export const NatsConnect = async () => {
+  if (!process.env.NATS_CLIENT_ID) {
+    throw new Error('NATS_CLIENT_ID must be defined');
+  }
+  if (!process.env.NATS_CLUSTER_ID) {
+    throw new Error('NATS_CLUSTER_ID must be defined');
+  }
+  if (!process.env.NATS_URL) {
+    throw new Error('NATS_URL must be defined');
+  }
   let retries = 5;
   while (retries > 0)
     try {
       await natsWrapper.connect(
-        'ticketing',
-        randomBytes(4).toString('hex'),
-        'http://nats-srv-cluster:4222'
+        process.env.NATS_CLUSTER_ID,
+        process.env.NATS_CLIENT_ID,
+        process.env.NATS_URL
       );
 
       break;
