@@ -1,6 +1,5 @@
 import { natsWrapper } from './NatsWrapper';
 
-import { randomBytes } from 'crypto';
 export const NatsConnect = async () => {
   if (!process.env.NATS_CLIENT_ID) {
     throw new Error('NATS_CLIENT_ID must be defined');
