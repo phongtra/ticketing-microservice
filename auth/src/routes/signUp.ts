@@ -18,7 +18,7 @@ router.post(
     const user = User.build({ email, password });
     await user.save();
     const userJWT = jwt.sign(
-      { userId: user.id, userEmail: user.email },
+      { id: user.id, email: user.email },
       process.env.JWT_KEY!
     );
 
