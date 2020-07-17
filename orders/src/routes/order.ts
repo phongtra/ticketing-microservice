@@ -4,7 +4,8 @@ import {
   requestValidation,
   NotFoundError,
   BadRequestError,
-  OrderStatus
+  OrderStatus,
+  NotAuthorizedError
 } from '@pt-ticket/common';
 import orderValidator from '../validators/orderValidator';
 import { Ticket } from '../models/Ticket';
@@ -62,8 +63,15 @@ router.post(
   }
 );
 
-router.get('/:orderId', async (req: Request, res: Response) => {
-  res.send({});
+router.get('/:orderId', requireAuth, async (req: Request, res: Response) => {
+  const order = await Order.findById(req.params.orderId).populate('ticket');
+  if (!order) {
+    throw new NotFoundError();
+  }
+  if (order.userId !== req.currentUser!.id) {
+    throw new NotAuthorizedError();
+  }
+  res.send(order);
 });
 
 export { router as orderRoute };
