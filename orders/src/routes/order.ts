@@ -18,7 +18,7 @@ router.get('/', requireAuth, async (req: Request, res: Response) => {
   const orders = await Order.find({ userId: req.currentUser!.id }).populate(
     'ticket'
   );
-  res.send({ orders });
+  res.send(orders);
 });
 
 router.delete('/:orderId', async (req: Request, res: Response) => {
