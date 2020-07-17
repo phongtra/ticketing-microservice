@@ -3,11 +3,14 @@ import {
   requireAuth,
   requestValidation,
   NotFoundError,
-  BadRequestError
+  BadRequestError,
+  OrderStatus
 } from '@pt-ticket/common';
 import orderValidator from '../validators/orderValidator';
 import { Ticket } from '../models/Ticket';
 import { Order } from '../models/Order';
+
+const EXPIRATION_WINDOW_SECOND = 15 * 60;
 
 const router = Router();
 
@@ -39,10 +42,20 @@ router.post(
     }
 
     //Calculate the expiration date for this order
+    const expiration = new Date();
+    expiration.setSeconds(expiration.getSeconds() + EXPIRATION_WINDOW_SECOND);
 
     //Build the order and save it to the database
+    const order = Order.build({
+      userId: req.currentUser!.id,
+      status: OrderStatus.Created,
+      expiresAt: expiration,
+      ticket
+    });
+    await order.save();
 
     //Publish an event saying that an order is created
+    res.status(201).send(order);
   }
 );
 
