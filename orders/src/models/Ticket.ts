@@ -3,12 +3,12 @@ import { Order, OrderStatus } from './Order';
 
 interface TicketAttrs {
   title: string;
-  price: string;
+  price: number;
 }
 
 export interface TicketDoc extends mongoose.Document {
   title: string;
-  price: string;
+  price: number;
   isReserved(): Promise<boolean>;
 }
 

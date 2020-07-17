@@ -4,6 +4,7 @@ import { signIn } from '../../test/signIn';
 import { Ticket } from '../../models/Ticket';
 // import { natsWrapper } from '../../NatsWrapper';
 import mongoose from 'mongoose';
+import { Order, OrderStatus } from '../../models/Order';
 
 it('has a route handler listening to /api/orders for post request', async () => {
   const res = await request(app).post('/api/orders').send({});
@@ -28,5 +29,36 @@ it('returns an error if a ticket is not exist', async () => {
     .send({ ticketId })
     .expect(404);
 });
-it('returns an error if a ticket is already reserved', async () => {});
-it('reserves a ticket', async () => {});
+it('returns an error if a ticket is already reserved', async () => {
+  const ticket = Ticket.build({
+    title: 'concert',
+    price: 20
+  });
+  await ticket.save();
+  const order = Order.build({
+    ticket,
+    userId: 'sjdkajldkjasld',
+    status: OrderStatus.Created,
+    expiresAt: new Date()
+  });
+  await order.save();
+  await request(app)
+    .post('/api/orders')
+    .set('Cookie', signIn())
+    .send({ ticketId: ticket.id })
+    .expect(400);
+});
+it('reserves a ticket', async () => {
+  const ticket = Ticket.build({
+    title: 'concert',
+    price: 20
+  });
+  await ticket.save();
+  const res = await request(app)
+    .post('/api/orders')
+    .set('Cookie', signIn())
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  expect(res.body.ticket).toBeDefined();
+});
