@@ -62,3 +62,5 @@ it('reserves a ticket', async () => {
 
   expect(res.body.ticket).toBeDefined();
 });
+
+it.todo('emits an event after the order is created');
