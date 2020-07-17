@@ -24,9 +24,30 @@ router.get('/', requireAuth, async (req: Request, res: Response) => {
   res.send(orders);
 });
 
-router.delete('/:orderId', async (req: Request, res: Response) => {
-  res.send({});
-});
+router.delete(
+  '/:orderId',
+  requireAuth,
+  [
+    param('orderId')
+      .notEmpty()
+      .withMessage('orderId must be provided')
+      .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
+      .withMessage('orderId must be valid')
+  ],
+  requestValidation,
+  async (req: Request, res: Response) => {
+    const order = await Order.findById(req.params.orderId);
+    if (!order) {
+      throw new NotFoundError();
+    }
+    if (order.userId !== req.currentUser!.id) {
+      throw new NotAuthorizedError();
+    }
+    order.status = OrderStatus.Cancelled;
+    await order.save();
+    res.status(204).send(order);
+  }
+);
 
 router.post(
   '/',
