@@ -1,4 +1,5 @@
 import { Router, Response, Request } from 'express';
+import mongoose from 'mongoose';
 import {
   requireAuth,
   requestValidation,
@@ -10,6 +11,7 @@ import {
 import orderValidator from '../validators/orderValidator';
 import { Ticket } from '../models/Ticket';
 import { Order } from '../models/Order';
+import { param } from 'express-validator';
 
 const EXPIRATION_WINDOW_SECOND = 15 * 60;
 
@@ -63,15 +65,27 @@ router.post(
   }
 );
 
-router.get('/:orderId', requireAuth, async (req: Request, res: Response) => {
-  const order = await Order.findById(req.params.orderId).populate('ticket');
-  if (!order) {
-    throw new NotFoundError();
+router.get(
+  '/:orderId',
+  requireAuth,
+  [
+    param('orderId')
+      .notEmpty()
+      .withMessage('orderId must be provided')
+      .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
+      .withMessage('orderId must be valid')
+  ],
+  requestValidation,
+  async (req: Request, res: Response) => {
+    const order = await Order.findById(req.params.orderId).populate('ticket');
+    if (!order) {
+      throw new NotFoundError();
+    }
+    if (order.userId !== req.currentUser!.id) {
+      throw new NotAuthorizedError();
+    }
+    res.send(order);
   }
-  if (order.userId !== req.currentUser!.id) {
-    throw new NotAuthorizedError();
-  }
-  res.send(order);
-});
+);
 
 export { router as orderRoute };
