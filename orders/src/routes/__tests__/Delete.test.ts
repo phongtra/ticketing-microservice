@@ -3,6 +3,7 @@ import { app } from '../../App';
 import { signIn } from '../../test/signIn';
 import { Ticket } from '../../models/Ticket';
 import { Order, OrderStatus } from '../../models/Order';
+import { natsWrapper } from '../../NatsWrapper';
 
 it('returns an error if the orderId is invalid', async () => {
   const res = await request(app)
@@ -35,4 +36,19 @@ it('marks an order as cancelled', async () => {
   expect(cancelledOrder!.status).toEqual(OrderStatus.Cancelled);
 });
 
-it.todo('emits an event for cancelled order');
+it('emits an event for cancelled order', async () => {
+  const ticket = Ticket.build({ title: 'concert', price: 20 });
+  await ticket.save();
+  const user1 = signIn();
+  const { body: order } = await request(app)
+    .post('/api/orders')
+    .set('Cookie', user1)
+    .send({ ticketId: ticket.id })
+    .expect(201);
+  await request(app)
+    .delete(`/api/orders/${order.id}`)
+    .set('Cookie', user1)
+    .send({})
+    .expect(204);
+  expect(natsWrapper.stan.publish).toHaveBeenCalled();
+});

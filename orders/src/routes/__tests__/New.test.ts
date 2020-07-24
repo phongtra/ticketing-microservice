@@ -5,6 +5,7 @@ import { Ticket } from '../../models/Ticket';
 // import { natsWrapper } from '../../NatsWrapper';
 import mongoose from 'mongoose';
 import { Order, OrderStatus } from '../../models/Order';
+import { natsWrapper } from '../../NatsWrapper';
 
 it('has a route handler listening to /api/orders for post request', async () => {
   const res = await request(app).post('/api/orders').send({});
@@ -63,4 +64,16 @@ it('reserves a ticket', async () => {
   expect(res.body.ticket).toBeDefined();
 });
 
-it.todo('emits an event after the order is created');
+it('emits an event after the order is created', async () => {
+  const ticket = Ticket.build({
+    title: 'concert',
+    price: 20
+  });
+  await ticket.save();
+  const res = await request(app)
+    .post('/api/orders')
+    .set('Cookie', signIn())
+    .send({ ticketId: ticket.id })
+    .expect(201);
+  expect(natsWrapper.stan.publish).toHaveBeenCalled();
+});

@@ -2,7 +2,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
 let mongo: MongoMemoryServer;
-// jest.mock('../NatsWrapper');
+jest.mock('../NatsWrapper');
 beforeAll(async () => {
   process.env.JWT_KEY = 'adhaskdhwuihqewuihweuhwi';
   mongo = new MongoMemoryServer();
