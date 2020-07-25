@@ -81,4 +81,4 @@ router.put(
   }
 );
 
-export { router as createTicketRouter };
+export { router as ticketRoute };
