@@ -3,14 +3,23 @@ import nats, { Stan } from 'node-nats-streaming';
 class NatsWrapper {
   private _stan?: Stan;
 
-  async connect(clusterId: string, clientId: string, url: string) {
-    this._stan = nats.connect(clusterId, clientId, { url });
-
-    this.stan.on('connect', () => {
-      console.log('Connected to NATS');
+  connect(clusterId: string, clientId: string, url: string) {
+    // docs call client stan (!?)
+    const stan = nats.connect(clusterId, clientId, {
+      url
     });
-    this.stan.on('error', (err) => {
-      throw err;
+    this._stan = stan;
+
+    return new Promise((res, rej) => {
+      this.stan.on('connect', () => {
+        console.log('ORDERS: NATS Singleton Server Connected');
+        return res();
+      });
+
+      // error
+      this.stan.on('error', (err: any) => {
+        rej(err);
+      });
     });
   }
   get stan() {

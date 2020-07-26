@@ -1,4 +1,6 @@
 import { natsWrapper } from './NatsWrapper';
+import { TicketCreatedListener } from './events/listeners/TicketCreatedListener';
+import { TicketUpdatedListener } from './events/listeners/TicketUpdatedListener';
 
 export const NatsConnect = async () => {
   if (!process.env.NATS_CLIENT_ID) {
@@ -24,7 +26,7 @@ export const NatsConnect = async () => {
       retries--;
       console.error('Failed to connect, retries time is: ', retries);
       if (retries == 0) {
-        throw new Error('Failed to connect to NATS');
+        throw new Error(e);
       }
     }
 };
