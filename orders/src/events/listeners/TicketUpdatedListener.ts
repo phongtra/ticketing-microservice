@@ -1,6 +1,5 @@
 import { Message } from 'node-nats-streaming';
 import { Listener, TicketUpdatedEvent, Subjects } from '@pt-ticket/common';
-import { QUEUE_GROUP_NAME } from '../../constants';
 import { Ticket } from '../../models/Ticket';
 
 export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
