@@ -29,6 +29,7 @@ router.post(
     await ticket.save();
     await new TicketCreatedPublisher(natsWrapper.stan).publish({
       id: ticket.id,
+      version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId
@@ -73,6 +74,7 @@ router.put(
     await ticket.save();
     await new TicketUpdatedPublisher(natsWrapper.stan).publish({
       id: ticket.id,
+      version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId

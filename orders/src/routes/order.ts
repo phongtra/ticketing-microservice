@@ -49,12 +49,12 @@ router.delete(
     order.status = OrderStatus.Cancelled;
     await order.save();
     //publishing an event indicate that the order is cancelled
-    new OrderCancelledPublisher(natsWrapper.stan).publish({
-      id: order.id,
-      ticket: {
-        id: order.ticket.id
-      }
-    });
+    // new OrderCancelledPublisher(natsWrapper.stan).publish({
+    //   id: order.id,
+    //   ticket: {
+    //     id: order.ticket.id
+    //   }
+    // });
     res.status(204).send(order);
   }
 );
@@ -92,16 +92,16 @@ router.post(
     await order.save();
 
     //Publish an event saying that an order is created
-    new OrderCreatedPublisher(natsWrapper.stan).publish({
-      id: order.id,
-      status: OrderStatus.Created,
-      userId: order.userId,
-      expiresAt: order.expiresAt.toISOString(),
-      ticket: {
-        id: ticket.id,
-        price: ticket.price
-      }
-    });
+    // new OrderCreatedPublisher(natsWrapper.stan).publish({
+    //   id: order.id,
+    //   status: OrderStatus.Created,
+    //   userId: order.userId,
+    //   expiresAt: order.expiresAt.toISOString(),
+    //   ticket: {
+    //     id: ticket.id,
+    //     price: ticket.price
+    //   }
+    // });
     res.status(201).send(order);
   }
 );

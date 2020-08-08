@@ -6,7 +6,7 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
   protected readonly subject = Subjects.TicketUpdated;
   protected queueGroupName = 'orderService';
   protected onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
-    Ticket.findById(data.id).then((ticket) => {
+    Ticket.findByEvent(data).then((ticket) => {
       if (!ticket) {
         throw new Error('Ticket is not found');
       }
