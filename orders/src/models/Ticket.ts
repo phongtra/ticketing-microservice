@@ -35,12 +35,7 @@ ticketSchema.set('toJSON', {
   }
 });
 ticketSchema.set('versionKey', 'version');
-// ticketSchema.plugin(updateIfCurrentPlugin);
-ticketSchema.pre('save', function (done) {
-  // @ts-ignore
-  this.$where = { version: this.get('version') - 1 };
-  done();
-});
+ticketSchema.plugin(updateIfCurrentPlugin);
 ticketSchema.statics.findByEvent = (event: { id: string; version: number }) => {
   return Ticket.findOne({ _id: event.id, version: event.version - 1 });
 };
